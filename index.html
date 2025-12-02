@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Planner App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="app">
+    <header>
+        <div id="today-heading">Today</div>
+
+        <!-- Top add bar -->
+        <div id="top-add-bar">
+        <span>+</span>
+        <input
+            id="top-add-input"
+            type="text"
+            placeholder="add a new task here..."
+        />
+        </div>
+    </header>
+
+    <main class="layout">
+        <!-- LEFT: daily tasks -->
+        <section id="task-column">
+            <div id="day-tabs">
+            <button class="day-tab" type="button">Monday</button>
+            <button class="day-tab active" type="button" id="today-tab">
+            <span id="today-short-label">Today</span>
+            </button>
+            <button class="day-tab" type="button">Wednesday</button>
+        </div>
+
+        <div id="task-date-label"></div>
+
+        <div id="add-task-container">
+            <input
+            id="new-task-input"
+            type="text"
+            placeholder="add a new task here..."
+            />
+            <button id="add-task-button" type="button">+</button>
+        </div>
+
+        <ul id="task-list"></ul>
+        </section>
+
+        <!-- RIGHT: week + month -->
+        <section id="right-column">
+        <div class="card" id="week-card">
+            <div id="week-strip-header">
+            The week of <span id="week-of-label"></span>
+            </div>
+        </div>
+
+        <div class="card" id="month-card">
+            <h2 id="current-month">Month</h2>
+            <table id="calendar-table">
+            <thead>
+                <tr>
+                <th>MON</th>
+                <th>TUE</th>
+                <th>WED</th>
+                <th>THU</th>
+                <th>FRI</th>
+                <th>SAT</th>
+                <th>SUN</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+        </section>
+    </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
