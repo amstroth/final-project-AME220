@@ -13,7 +13,7 @@
 
         <!-- Top add bar -->
         <div id="top-add-bar">
-        <span>+</span>
+        <span id="top-add-button">+</span>
         <input
             id="top-add-input"
             type="text"
@@ -35,25 +35,33 @@
 
         <div id="task-date-label"></div>
 
-        <div id="add-task-container">
-            <input
-            id="new-task-input"
-            type="text"
-            placeholder="add a new task here..."
-            />
-            <button id="add-task-button" type="button">+</button>
-        </div>
-
         <ul id="task-list"></ul>
         </section>
 
         <!-- RIGHT: week + month -->
-        <section id="right-column">
+            <section id="right-column">
         <div class="card" id="week-card">
             <div id="week-strip-header">
             The week of <span id="week-of-label"></span>
             </div>
+
+            <!-- NEW week table -->
+            <table id="week-table">
+            <thead>
+                <tr>
+                <th>MON</th>
+                <th>TUE</th>
+                <th>WED</th>
+                <th>THU</th>
+                <th>FRI</th>
+                <th>SAT</th>
+                <th>SUN</th>
+                </tr>
+            </thead>
+            <tbody id="week-body"></tbody>
+            </table>
         </div>
+
 
         <div class="card" id="month-card">
             <h2 id="current-month">Month</h2>
