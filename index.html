@@ -37,7 +37,7 @@
             <label>Due Date:</label>
             <input type="date" id="due-date-input" />
 
-            <label>Due Time:</label>
+            <label id="due-time-label">Due Time:</label>
             <input type="time" id="due-time-input" />
             <label class="task-form-toggle">
                 <input type="checkbox" id="no-due-toggle" />
@@ -47,19 +47,19 @@
 
         <!-- Work window -->
         <div class="task-form-row">
-            <label>Work Window (Start):</label>
+            <label id="work-start-label">Work Window (Start):</label>
             <input type="date" id="work-start-date-input" />
             <input type="time" id="work-start-time-input" />
+        </div>
+
+        <div class="task-form-row">
+            <label id="work-end-label">Work Window (End):</label>
+            <input type="date" id="work-end-date-input" />
+            <input type="time" id="work-end-time-input" />
             <label class="task-form-toggle">
                 <input type="checkbox" id="no-window-toggle" />
                 No work window
             </label>
-        </div>
-
-        <div class="task-form-row">
-            <label>Work Window (End):</label>
-            <input type="date" id="work-end-date-input" />
-            <input type="time" id="work-end-time-input" />
         </div>
 
         <button id="task-form-submit" type="button">Add Task</button>
