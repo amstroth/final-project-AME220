@@ -13,13 +13,56 @@
 
         <!-- Top add bar -->
         <div id="top-add-bar">
-        <span id="top-add-button">+</span>
-        <input
+            <span id="top-add-toggle">+</span>
+            <input
             id="top-add-input"
             type="text"
             placeholder="add a new task here..."
-        />
+            />
+            <!-- SETTINGS MENU BUTTON -->
+            <span id="settings-toggle" class="settings-btn">⚙️</span>
+
         </div>
+            <div id="settings-menu" class="settings-menu hidden">
+                <div id="all-tasks-container"></div>
+            </div>
+
+        <!-- NEW: dropdown task form -->
+        <div id="task-form" class="task-form hidden">
+        <!-- Due date + time -->
+        <div class="task-form-row">
+            <label>Due Date</label>
+            <input type="date" id="due-date-input" />
+
+            <label>Due Time</label>
+            <input type="time" id="due-time-input" />
+            <label class="task-form-toggle">
+                <input type="checkbox" id="no-due-toggle" />
+                No due date
+            </label>
+        </div>
+
+        <!-- Work window -->
+        <div class="task-form-row">
+            <label>Work Window (Start)</label>
+            <input type="date" id="work-start-date-input" />
+            <input type="time" id="work-start-time-input" />
+            <label class="task-form-toggle">
+                <input type="checkbox" id="no-window-toggle" />
+                No work window
+            </label>
+        </div>
+
+        <div class="task-form-row">
+            <label>Work Window (End)</label>
+            <input type="date" id="work-end-date-input" />
+            <input type="time" id="work-end-time-input" />
+        </div>
+
+        <button id="task-form-submit" type="button">Add Task</button>
+        </div>
+
+        
     </header>
 
     <main class="layout">
@@ -41,27 +84,29 @@
         <!-- RIGHT: week + month -->
             <section id="right-column">
         <div class="card" id="week-card">
-            <div id="week-strip-header">
+        <div id="week-strip-header">
             The week of <span id="week-of-label"></span>
-            </div>
-
-            <!-- NEW week table -->
-            <table id="week-table">
-            <thead>
-                <tr>
-                <th>MON</th>
-                <th>TUE</th>
-                <th>WED</th>
-                <th>THU</th>
-                <th>FRI</th>
-                <th>SAT</th>
-                <th>SUN</th>
-                </tr>
-            </thead>
-            <tbody id="week-body"></tbody>
-            </table>
         </div>
 
+        <!-- NEW wrapper + overlay -->
+        <div class="week-wrapper">
+    <table id="week-table">
+        <thead>
+        <tr>
+            <th>MON</th>
+            <th>TUE</th>
+            <th>WED</th>
+            <th>THU</th>
+            <th>FRI</th>
+            <th>SAT</th>
+            <th>SUN</th>
+        </tr>
+        </thead>
+        <tbody id="week-body"></tbody>
+    </table>
+    <div id="week-bars-layer"></div>
+    </div>
+    </div>
 
         <div class="card" id="month-card">
             <h2 id="current-month">Month</h2>
