@@ -490,6 +490,12 @@ main.layout {
     color: var(--porcelain);
 }
 
+#week-bars-layer .week-task-bar.done,
+#week-bars-layer .week-task-bar-due.done {
+    background: var(--mint-green);
+    color: var(--onyx);
+}
+
 #week-bars-layer .week-task-bar{
     height: 1.2rem;
     font-size: 0.7rem;
@@ -576,6 +582,11 @@ main.layout {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.month-due-pill.done {
+    background: var(--mint-green);
+    color: var(--onyx);
 }
 
 .month-due-pill.compact {

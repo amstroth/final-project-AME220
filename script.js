@@ -17,14 +17,22 @@
     return `Today, ${month} ${day}${getSuffix(day)} ${year}`;
     }
 
-    function formatShortToday(date) {
+function formatShortToday(date) {
     const weekday = date.toLocaleString("en-US", { weekday: "long" });
     const day = date.getDate();
     return `${weekday}, ${day}${getSuffix(day)}`;
-    }
+}
 
-    // local "YYYY-MM-DD" from Date
-    function toISODate(d) {
+let selectedDate = new Date();
+
+function formatTaskDayLabel(d) {
+    const weekday = d.toLocaleString("en-US", { weekday: "long" });
+    const day = d.getDate();
+    return `${weekday} the ${day}${getSuffix(day)}`;
+}
+
+// local "YYYY-MM-DD" from Date
+function toISODate(d) {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
@@ -39,18 +47,6 @@
 
     document.getElementById("today-heading").textContent =
         formatFullToday(today);
-
-    document.getElementById("today-short-label").textContent =
-        formatShortToday(today);
-
-    const formatTaskDayLabel = (d) => {
-        const weekday = d.toLocaleString("en-US", { weekday: "long" });
-        const day = d.getDate();
-        return `${weekday} the ${day}${getSuffix(day)}`;
-    };
-
-    document.getElementById("task-date-label").textContent =
-        "Tasks for " + formatTaskDayLabel(today);
 
     // Week-of label (Monday of this week)
     const currentDay = today.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
@@ -157,6 +153,63 @@ function dayHasWorkWindow(isoDate) {
         (t) => t.workStart && t.workEnd && t.workStart <= isoDate && isoDate <= t.workEnd
     );
     }
+
+    /* -----------------------------
+    Day tab navigation (left column)
+    ----------------------------- */
+function updateTaskViewLabels(date) {
+    const taskLabel = document.getElementById("task-date-label");
+    if (taskLabel) {
+        taskLabel.textContent = "Tasks for " + formatTaskDayLabel(date);
+    }
+}
+
+function updateDayTabsUI() {
+    const tabs = document.querySelectorAll("#day-tabs .day-tab");
+    if (tabs.length < 3) return;
+
+    const prevDate = new Date(selectedDate);
+    prevDate.setDate(selectedDate.getDate() - 1);
+
+    const nextDate = new Date(selectedDate);
+    nextDate.setDate(selectedDate.getDate() + 1);
+
+    tabs[0].textContent = prevDate.toLocaleString("en-US", { weekday: "long" });
+
+    const centerLabel = formatTaskDayLabel(selectedDate);
+    const midLabel = document.getElementById("today-short-label");
+    if (midLabel) {
+        midLabel.textContent = centerLabel;
+    } else {
+        tabs[1].textContent = centerLabel;
+    }
+
+    tabs[2].textContent = nextDate.toLocaleString("en-US", { weekday: "long" });
+
+    tabs.forEach((tab, idx) => {
+        tab.classList.toggle("active", idx === 1);
+    });
+}
+
+function setSelectedDate(date) {
+    selectedDate = new Date(date);
+    refreshUI();
+}
+
+function shiftSelectedDate(days) {
+    const next = new Date(selectedDate);
+    next.setDate(selectedDate.getDate() + days);
+    setSelectedDate(next);
+}
+
+function initDayTabNavigation() {
+    const tabs = document.querySelectorAll("#day-tabs .day-tab");
+    if (tabs.length < 3) return;
+
+    tabs[0].addEventListener("click", () => shiftSelectedDate(-1));
+    tabs[1].addEventListener("click", () => setSelectedDate(selectedDate));
+    tabs[2].addEventListener("click", () => shiftSelectedDate(1));
+}
 
     /* -----------------------------
     Week view (Mon–Sun for current week)
@@ -278,7 +331,8 @@ function drawWeekBars(weekDates, dateRow) {
             startIdx: windowStartIdx,
             endIdx: windowEndIdx,
             dueIdx: dueIdxWithinWindow,
-            text: task.text
+            text: task.text,
+            done: task.done
             });
         }
         }
@@ -296,7 +350,8 @@ function drawWeekBars(weekDates, dateRow) {
             type: "dueOnly",
             startIdx: dueIdx,
             endIdx: dueIdx,
-            text: task.text
+            text: task.text,
+            done: task.done
             });
         }
         }
@@ -368,6 +423,9 @@ function drawWeekBars(weekDates, dateRow) {
         baseBar.style.height = barHeight + "px";
         baseBar.style.borderRadius = radiusPx + "px";
         baseBar.textContent = bar.text;
+        if (bar.done) {
+            baseBar.classList.add("done");
+        }
         barsLayer.appendChild(baseBar);
 
         if (bar.dueIdx !== null && bar.dueIdx !== undefined) {
@@ -389,6 +447,9 @@ function drawWeekBars(weekDates, dateRow) {
             const br = tr;
             const bl = tl;
             dueBar.style.borderRadius = `${tl}px ${tr}px ${br}px ${bl}px`;
+            if (bar.done) {
+            dueBar.classList.add("done");
+            }
 
             barsLayer.appendChild(dueBar);
         }
@@ -407,6 +468,9 @@ function drawWeekBars(weekDates, dateRow) {
         dueBar.style.height = barHeight + "px";
         dueBar.style.borderRadius = `${radiusPx}px`;
         dueBar.textContent = bar.text;
+        if (bar.done) {
+            dueBar.classList.add("done");
+        }
         barsLayer.appendChild(dueBar);
         }
     });
@@ -483,6 +547,9 @@ function drawWeekBars(weekDates, dateRow) {
             visible.forEach((t) => {
                 const duePill = document.createElement("div");
                 duePill.className = "month-due-pill" + compact;
+                if (t.done) {
+                    duePill.classList.add("done");
+                }
                 duePill.textContent = t.text;
                 duePill.title = t.text;
                 cell.appendChild(duePill);
@@ -546,9 +613,10 @@ function drawWeekBars(weekDates, dateRow) {
     /* -----------------------------
     Task list (left column)
     ----------------------------- */
-    function renderTasksForToday() {
-    const todayIso = toISODate(new Date());
-    const tasks = tasksForDate(todayIso);
+    function renderTasksForSelectedDay() {
+    const selectedIso = toISODate(selectedDate);
+    const tasks = tasksForDate(selectedIso);
+    updateTaskViewLabels(selectedDate);
     const list = document.getElementById("task-list");
     list.innerHTML = "";
 
@@ -668,8 +736,7 @@ const input = document.getElementById("top-add-input");
 const text = input.value.trim();
 if (!text) return;
 
-    const today = new Date();
-    const dueIso = toISODate(today); // daily task, due today at "midnight" conceptually
+    const dueIso = toISODate(selectedDate); // daily task for the viewed day
 
     createTask({
         text,
@@ -742,6 +809,7 @@ if (!text) return;
     const taskForm = document.getElementById("task-form");
     const formSubmit = document.getElementById("task-form-submit");
     initTaskFormToggles();
+    initDayTabNavigation();
 
     // Enter in input = quick daily task
     topInput.addEventListener("keyup", (e) => {
@@ -760,14 +828,16 @@ if (!text) return;
         handleFormAdd();
     });
 
-    renderTasksForToday();
+    updateDayTabsUI();
+    renderTasksForSelectedDay();
     }
 
     /* -----------------------------
     Refresh all views
     ----------------------------- */
     function refreshUI() {
-    renderTasksForToday();
+    renderTasksForSelectedDay();
+    updateDayTabsUI();
     renderWeekView();
     renderCalendar();
     }
