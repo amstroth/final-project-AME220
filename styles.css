@@ -83,6 +83,24 @@ header {
     background-color: var(--dusty-rose);
 }
 
+#due-date-label{
+    margin-right: 5rem;
+}
+
+#work-start-label{
+    margin-right: 0.5rem;
+}
+
+#work-end-label{
+    margin-right: 1rem;
+}
+#work-start-date-input{
+    margin-right: 5rem;
+}
+#work-end-date-input{
+    margin-right: 5cqw;
+}
+
 /* Dropdown task form */
 .task-form {
     margin-top: -4rem;
@@ -139,7 +157,7 @@ header {
 }
 
 .task-form-toggle {
-    margin-left: auto;
+    margin-left: 0;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -155,6 +173,7 @@ header {
 .task-form.hidden {
     display: none;
 }
+
 
 /* Settings Button */
 .settings-btn {
@@ -614,7 +633,7 @@ main.layout {
     main.layout {
     grid-template-columns: 1fr;
     }
-}
+
 
 .task-form-row{
     display: flex;
@@ -641,4 +660,5 @@ main.layout {
 
 #week-table td{
     height: 7rem;
+}
 }
