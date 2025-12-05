@@ -43,8 +43,14 @@
     document.getElementById("today-short-label").textContent =
         formatShortToday(today);
 
+    const formatTaskDayLabel = (d) => {
+        const weekday = d.toLocaleString("en-US", { weekday: "long" });
+        const day = d.getDate();
+        return `${weekday} the ${day}${getSuffix(day)}`;
+    };
+
     document.getElementById("task-date-label").textContent =
-        "Tasks for " + formatShortToday(today);
+        "Tasks for " + formatTaskDayLabel(today);
 
     // Week-of label (Monday of this week)
     const currentDay = today.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
@@ -155,6 +161,7 @@ function dayHasWorkWindow(isoDate) {
     /* -----------------------------
     Week view (Mon–Sun for current week)
     ----------------------------- */
+let weekOverflowShowBottom = false;
         function renderWeekView() {
     const today = new Date();
 
@@ -297,17 +304,51 @@ function drawWeekBars(weekDates, dateRow) {
 
     if (!bars.length) return;
 
-    const totalHeight = bars.length * barHeight + (bars.length - 1) * gap;
+    // Pack bars into rows so non-overlapping spans can share a line.
+    const rows = [];
+    bars.forEach((bar) => {
+        let placedRow = null;
+        for (let r = 0; r < rows.length; r++) {
+        if (bar.startIdx > rows[r].endIdx) {
+            placedRow = r;
+            rows[r].endIdx = bar.endIdx;
+            break;
+        }
+        }
+        if (placedRow === null) {
+        placedRow = rows.length;
+        rows.push({ endIdx: bar.endIdx });
+        }
+        bar.row = placedRow;
+    });
+
+    const maxRows = 8;
+    const overflowCount = Math.max(0, rows.length - maxRows);
+
+    const visibleRowIndices = weekOverflowShowBottom && overflowCount > 0
+        ? rows.map((_, idx) => idx).filter((idx) => idx >= overflowCount)
+        : rows.map((_, idx) => idx).filter((idx) => idx < maxRows);
+
+    const rowIndexMap = {};
+    visibleRowIndices.forEach((idx, compressed) => {
+        rowIndexMap[idx] = compressed;
+    });
+
+    const barsToRender = bars.filter((bar) => rowIndexMap.hasOwnProperty(bar.row));
+    const rowsUsed = visibleRowIndices.length;
+    if (!barsToRender.length) return;
+
+    const totalHeight = rowsUsed * barHeight + (rowsUsed - 1) * gap;
 
     // Leave room for the date numbers at the top of each cell.
-    const labelReserve = -40; // px reserved for the day number (smaller gap)
+    const labelReserve = 18; // px reserved for the day number
     const baseTop =
         rowRect.top -
         layerRect.top +
         labelReserve +
         (rowRect.height - labelReserve - totalHeight) / 2;
 
-    bars.forEach((bar, index) => {
+    barsToRender.forEach((bar) => {
         const startCellRect =
         dateRow.children[bar.startIdx].getBoundingClientRect();
         const endCellRect = dateRow.children[bar.endIdx].getBoundingClientRect();
@@ -316,7 +357,7 @@ function drawWeekBars(weekDates, dateRow) {
         const right = endCellRect.right - layerRect.left - 4;
         const width = right - left;
 
-        const top = baseTop + index * (barHeight + gap);
+        const top = baseTop + rowIndexMap[bar.row] * (barHeight + gap);
 
         if (bar.type === "window") {
         const baseBar = document.createElement("div");
@@ -369,6 +410,20 @@ function drawWeekBars(weekDates, dateRow) {
         barsLayer.appendChild(dueBar);
         }
     });
+
+    const hiddenCount = bars.length - barsToRender.length;
+    if (hiddenCount > 0) {
+        const overflow = document.createElement("div");
+        overflow.className = "week-bars-overflow";
+        overflow.textContent = weekOverflowShowBottom
+        ? "Show earlier"
+        : `+${hiddenCount} more`;
+        overflow.addEventListener("click", () => {
+        weekOverflowShowBottom = !weekOverflowShowBottom;
+        renderWeekView();
+        });
+        barsLayer.appendChild(overflow);
+    }
 }
 
     // Draw overlay bars positioned above the week table cells
@@ -423,13 +478,22 @@ function drawWeekBars(weekDates, dateRow) {
             if (dayHasDueTask(iso)) {
             cell.classList.add("has-task");
             const dueTasks = tasksDueOnDate(iso);
-            dueTasks.forEach((t) => {
+            const compact = dueTasks.length > 2 ? " compact" : "";
+            const visible = dueTasks.slice(0, 2);
+            visible.forEach((t) => {
                 const duePill = document.createElement("div");
-                duePill.className = "month-due-pill";
+                duePill.className = "month-due-pill" + compact;
                 duePill.textContent = t.text;
                 duePill.title = t.text;
                 cell.appendChild(duePill);
             });
+            const remaining = dueTasks.length - visible.length;
+            if (remaining > 0) {
+                const more = document.createElement("div");
+                more.className = "month-due-more";
+                more.textContent = `+${remaining}`;
+                cell.appendChild(more);
+            }
             }
 
             if (dayHasWorkWindow(iso)) {

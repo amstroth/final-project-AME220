@@ -20,7 +20,10 @@
             placeholder="add a new task here..."
             />
             <!-- SETTINGS MENU BUTTON -->
-            <span id="settings-toggle" class="settings-btn">⚙️</span>
+            <span id="settings-toggle" class="settings-btn">
+            <img src="images/settings-svgrepo-com.svg" alt="Settings"/>
+            </svg>
+            </span>
 
         </div>
             <div id="settings-menu" class="settings-menu hidden">
@@ -31,10 +34,10 @@
         <div id="task-form" class="task-form hidden">
         <!-- Due date + time -->
         <div class="task-form-row">
-            <label>Due Date</label>
+            <label>Due Date:</label>
             <input type="date" id="due-date-input" />
 
-            <label>Due Time</label>
+            <label>Due Time:</label>
             <input type="time" id="due-time-input" />
             <label class="task-form-toggle">
                 <input type="checkbox" id="no-due-toggle" />
@@ -44,7 +47,7 @@
 
         <!-- Work window -->
         <div class="task-form-row">
-            <label>Work Window (Start)</label>
+            <label>Work Window (Start):</label>
             <input type="date" id="work-start-date-input" />
             <input type="time" id="work-start-time-input" />
             <label class="task-form-toggle">
@@ -54,7 +57,7 @@
         </div>
 
         <div class="task-form-row">
-            <label>Work Window (End)</label>
+            <label>Work Window (End):</label>
             <input type="date" id="work-end-date-input" />
             <input type="time" id="work-end-time-input" />
         </div>

@@ -5,7 +5,7 @@
     --pastel-petal: #f4c9d6ff;
     --dusty-rose: #f0dbe7;
     --dark-coffee: #3e2723ff;
-    --porcelain: #faf9f6ff;
+    --porcelain: #faf9f6;
     --onyx: #131516ff;
     --dark-grey: #E9EBEC;
     --mint-green: #9EF1BC;
@@ -99,6 +99,45 @@ header {
     flex-wrap: wrap;
 }
 
+.task-form-row label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #444;
+    min-width: 70px;
+}
+.task-form-row input[type="date"]{
+    padding: 0.25rem 0.35rem;
+    border-radius: 6px;
+    color: #444;
+    border: 1px solid var(--dark-grey);
+    background: var(--porcelain);
+    font-size: 0.85rem;
+}
+.task-form-row input[type="time"] {
+    padding: 0.25rem 0.35rem;
+    border-radius: 6px;
+    border: 1px solid var(--dark-grey);
+    background: var(--porcelain);
+    font-size: 0.85rem;
+}
+
+#task-form-submit{
+    margin-top: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    color: var(--porcelain);
+    background: var(--dark-coffee);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.task-form-row input[type="checkbox"] {
+    accent-color: var(--amaranth);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
 .task-form-toggle {
     margin-left: auto;
     display: inline-flex;
@@ -120,8 +159,8 @@ header {
 /* Settings Button */
 .settings-btn {
     display: inline-flex;
-    width: 32px;
-    height: 32px;
+    width: 82px;
+    height: 82px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -134,15 +173,24 @@ header {
 
 /* Settings Dropdown */
 .settings-menu {
-    margin-top: 0.5rem;
-    padding: 1rem;
-    border-radius: 18px;
+    margin-top: -4rem;
+    padding: 4rem 1rem 1rem 1rem;
+    border-radius: 30px;
     background: var(--porcelain);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .settings-menu.hidden {
     display: none;
+}
+
+#settings-toggle{
+    padding:10px;
+}
+
+#settings-toggle img{
+    width: 22px;
+    height: 22px;
 }
 
 #all-tasks-container div {
@@ -451,12 +499,26 @@ main.layout {
 #week-bars-layer {
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 2;
 }
 
 #week-bars-layer .week-task-bar{
     position: absolute;
+    pointer-events: none;
+}
+
+.week-bars-overflow {
+    position: absolute;
+    right: 8px;
+    bottom: 6px;
+    font-size: 0.7rem;
+    color: #555;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.15rem 0.4rem;
+    border-radius: 999px;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 /* Month calendar */
@@ -514,6 +576,20 @@ main.layout {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.month-due-pill.compact {
+    font-size: 0.5rem;
+    padding: 0.03rem 0.15rem;
+    min-height: 0.3rem;
+}
+
+.month-due-more {
+    margin: 0.08rem auto 0;
+    width: 90%;
+    text-align: center;
+    font-size: 0.55rem;
+    color: #666;
 }
 
 #manage-tasks-btn {
